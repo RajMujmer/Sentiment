@@ -6,7 +6,4 @@ matplotlib
 pandas
 seaborn
 bs4
-transformers
-tensorflow
-tf-keras
-pytorch
+
