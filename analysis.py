@@ -48,7 +48,7 @@ def analyze_sentiment(text: str) -> Union[dict, None]:
     """
     try:
         # Load the sentiment analysis model with framework='pt'
-        model = pipeline('sentiment-analysis', framework='pt')  # Specify framework
+        model = pipeline('sentiment-analysis', framework='np')  # Specify framework
         result = model(text)[0]  # Get the first result
         return result
     except Exception as e:
