@@ -36,7 +36,7 @@ def get_word_lists(stop_word_folder: str) -> Tuple[List[str], List[str], List[st
     stop_words = []
     if stop_word_folder:  # Check if a folder was provided
         try:
-            for filename in os.listdir(stop_word_folder):
+            for filename in os.listdir(StopWords):
                 if filename.endswith(".txt"):  # Only process .txt files
                     file_path = os.path.join(stop_word_folder, filename)
                     stop_words.extend(load_words(file_path))
