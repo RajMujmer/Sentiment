@@ -1,14 +1,8 @@
 import streamlit as st
 from bs4 import BeautifulSoup
 import requests
-from transformers import pipeline  # For sentiment analysis
+from transformers import pipeline
 from typing import Union
-
-# Load the sentiment analysis model (this will download if it's the first time)
-@st.cache_resource  # Cache the model to avoid reloading on every run
-def load_sentiment_model():
-    """Loads the sentiment analysis model."""
-    return pipeline('sentiment-analysis')
 
 def scrape_webpage(url: str) -> Union[str, None]:
     """
@@ -42,7 +36,8 @@ def scrape_webpage(url: str) -> Union[str, None]:
 
 def analyze_sentiment(text: str) -> Union[dict, None]:
     """
-    Analyzes the sentiment of the given text.
+    Analyzes the sentiment of the given text using the transformers library.
+    Specifies the framework to use, to avoid needing to have tensorflow or pytorch installed.
 
     Args:
         text (str): The text to analyze.
@@ -52,7 +47,8 @@ def analyze_sentiment(text: str) -> Union[dict, None]:
               ('label' and 'score'), or None on error.
     """
     try:
-        model = load_sentiment_model()  # Load the model
+        # Load the sentiment analysis model with framework='pt'
+        model = pipeline('sentiment-analysis', framework='pt')  # Specify framework
         result = model(text)[0]  # Get the first result
         return result
     except Exception as e:
