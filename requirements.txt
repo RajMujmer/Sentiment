@@ -6,4 +6,4 @@ matplotlib
 pandas
 seaborn
 bs4
-
+transformers
