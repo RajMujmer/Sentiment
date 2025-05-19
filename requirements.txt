@@ -8,3 +8,4 @@ seaborn
 bs4
 transformers
 tensorflow
+tf-keras
