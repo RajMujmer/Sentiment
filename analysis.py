@@ -5,7 +5,9 @@ import string
 import requests
 from bs4 import BeautifulSoup
 import os
-import tempfile
+
+# Define the path to the stop words folder within the repository
+STOP_WORDS_FOLDER = "stop_words"  # Relative path to the folder
 
 def load_words(file_path: str) -> List[str]:
     """Loads words from a text file into a list."""
@@ -36,7 +38,7 @@ def get_word_lists(stop_word_folder: str) -> Tuple[List[str], List[str], List[st
     stop_words = []
     if stop_word_folder:  # Check if a folder was provided
         try:
-            for filename in os.listdir(StopWords):
+            for filename in os.listdir(stop_word_folder):
                 if filename.endswith(".txt"):  # Only process .txt files
                     file_path = os.path.join(stop_word_folder, filename)
                     stop_words.extend(load_words(file_path))
@@ -272,8 +274,8 @@ def main():
     else:
         url = st.text_input("Enter the URL to analyze:")
 
-    # Get stop word folder
-    stop_word_folder = st.text_input("Enter the path to the folder containing your stop word files:")
+    # Load word lists, including stop words from the folder in the repo
+    positive_words, negative_words, stop_words = get_word_lists(STOP_WORDS_FOLDER)
 
     # Analyze button
     if st.button("Analyze"):
@@ -283,17 +285,11 @@ def main():
         elif input_type == "Text" and not text:
             st.error("Please enter the text to analyze")
             return
-        elif not stop_word_folder:
-            st.error("Please enter the path to the folder containing your stop word files.")
-            return
 
         if input_type == "URL":
             text = scrape_text_from_url(url)
             if text is None:  # Error occurred during scraping
                 return
-
-        # Load word lists, including stop words from the folder
-        positive_words, negative_words, stop_words = get_word_lists(stop_word_folder)
 
         # Calculate metrics
         polarity, subjectivity = calculate_polarity_subjectivity(text, stop_words)
