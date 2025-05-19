@@ -20,14 +20,23 @@ def load_words(file_path: str) -> List[str]:
 
 # Load word lists from .txt files
 @st.cache_data  # Cache the loaded words for performance
-def get_word_lists():
-    """Loads positive, negative, and stop words from text files."""
+def get_word_lists(stop_word_files: List[str]) -> Tuple[List[str], List[str], List[str]]:
+    """Loads positive, negative, and stop words from text files.
+
+    Args:
+        stop_word_files (List[str]): List of file paths for stop word files.
+
+    Returns:
+        Tuple[List[str], List[str], List[str]]: positive, negative, and stop words lists.
+    """
     positive_words = load_words("positive-words.txt")
     negative_words = load_words("negative-words.txt")
-    stop_words = load_words("stopwords.txt")
+    stop_words = []
+    for file_path in stop_word_files:
+        stop_words.extend(load_words(file_path))
+    # Remove duplicate stop words
+    stop_words = list(set(stop_words))
     return positive_words, negative_words, stop_words
-
-positive_words, negative_words, stop_words = get_word_lists()
 
 def scrape_text_from_url(url: str) -> Union[str, None]:
     """
@@ -61,12 +70,13 @@ def scrape_text_from_url(url: str) -> Union[str, None]:
 
 
 
-def calculate_polarity_subjectivity(text: str) -> Tuple[float, float]:
+def calculate_polarity_subjectivity(text: str, stop_words: List[str]) -> Tuple[float, float]:
     """
     Calculates polarity and subjectivity of a text.
 
     Args:
         text (str): The input text.
+        stop_words (List[str]): A list of stop words.
 
     Returns:
         Tuple[float, float]: Polarity score (-1 to 1) and subjectivity score (0 to 1).
@@ -113,7 +123,7 @@ def calculate_fog_index(text: str) -> float:
     words = text.lower().split()
     total_words = len(words)
 
-    complex_words = count_complex_words(text)
+    complex_words = count_complex_words(text, stop_words)
 
     average_sentence_length = total_words / total_sentences
     percentage_complex_words = (complex_words / total_words) * 100
@@ -123,12 +133,13 @@ def calculate_fog_index(text: str) -> float:
 
 
 
-def count_complex_words(text: str) -> int:
+def count_complex_words(text: str, stop_words: List[str]) -> int:
     """
     Counts complex words (words with 3 or more syllables) in a text.
 
     Args:
         text (str): The input text.
+        stop_words (List[str]): A list of stop words.
 
     Returns:
         int: The number of complex words.
@@ -156,7 +167,7 @@ def count_complex_words(text: str) -> int:
 
 
 
-def count_words(text: str) -> int:
+def count_words(text: str, stop_words: List[str]) -> int:
     """Counts the total number of words in a text, excluding stop words and punctuation."""
     if not text:
         return 0
@@ -181,7 +192,7 @@ def count_syllables(word: str) -> int:
 
 
 
-def calculate_average_syllables_per_word(text: str) -> float:
+def calculate_average_syllables_per_word(text: str, stop_words: List[str]) -> float:
     """Calculates the average number of syllables per word in a text."""
     if not text:
         return 0.0
@@ -203,7 +214,7 @@ def count_personal_pronouns(text: str) -> int:
 
 
 
-def calculate_average_word_length(text: str) -> float:
+def calculate_average_word_length(text: str, stop_words: List[str]) -> float:
     """Calculates the average word length in a text, excluding stop words and punctuation."""
     if not text:
         return 0.0
@@ -250,6 +261,9 @@ def main():
     else:
         url = st.text_input("Enter the URL to analyze:")
 
+    # Get stop word files
+    stop_word_files = st.file_uploader("Upload Stop Word Files", type="txt", accept_multiple_files=True)
+
     # Analyze button
     if st.button("Analyze"):
         if input_type == "URL" and not url:
@@ -258,20 +272,26 @@ def main():
         elif input_type == "Text" and not text:
             st.error("Please enter the text to analyze")
             return
+        elif not stop_word_files:
+            st.error("Please upload at least one stop word file.")
+            return
 
         if input_type == "URL":
             text = scrape_text_from_url(url)
             if text is None:  # Error occurred during scraping
                 return
 
+        # Load word lists, including stop words from uploaded files
+        positive_words, negative_words, stop_words = get_word_lists([file.name for file in stop_word_files])
+
         # Calculate metrics
-        polarity, subjectivity = calculate_polarity_subjectivity(text)
+        polarity, subjectivity = calculate_polarity_subjectivity(text, stop_words)
         fog_index = calculate_fog_index(text)
-        complex_word_count = count_complex_words(text)
-        word_count = count_words(text)
-        average_syllables_per_word = calculate_average_syllables_per_word(text)
+        complex_word_count = count_complex_words(text, stop_words)
+        word_count = count_words(text, stop_words)
+        average_syllables_per_word = calculate_average_syllables_per_word(text, stop_words)
         personal_pronoun_count = count_personal_pronouns(text)
-        average_word_length = calculate_average_word_length(text)
+        average_word_length = calculate_average_word_length(text, stop_words)
         average_sentence_length = len(text.split()) / len(re.split(r'[.!?]+', text)) if len(re.split(r'[.!?]+', text)) > 0 else 0
         percentage_complex_words = (complex_word_count / word_count) * 100 if word_count else 0
 
