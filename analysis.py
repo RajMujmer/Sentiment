@@ -9,22 +9,38 @@ import os
 # Define the path to the stop words folder within the repository
 STOP_WORDS_FOLDER = "stop_words"  # Relative path to the folder
 
-def load_words(StopWords: str) -> List[str]:
-    """Loads words from a text file into a list."""
+def load_words(file_path: str, encoding: str = "utf-8") -> List[str]:
+    """Loads words from a text file into a list.  Handles encoding issues.
+
+    Args:
+        file_path (str): Path to the word list file.
+        encoding (str, optional):  Encoding to use. Defaults to "utf-8".
+    Returns:
+        List[str]:  List of words, or an empty list on error.
+    """
     try:
-        with open(StopWords, "r", encoding="utf-8") as f:
+        with open(file_path, "r", encoding=encoding) as f:
             words = [line.strip().lower() for line in f]
         return words
+    except UnicodeDecodeError:
+        st.warning(f"Warning:  '{encoding}' encoding failed for {file_path}. Trying 'latin-1'.")
+        try:
+            return load_words(file_path, encoding="latin-1")  # Recursive call with latin-1
+        except Exception as e:
+            st.error(f"Error:  Failed to load {file_path} with both utf-8 and latin-1.  Error: {e}")
+            return []
     except FileNotFoundError:
-        st.error(f"Error: File not found at {StopWords}")
+        st.error(f"Error: File not found at {file_path}")
         return []
     except Exception as e:
-        st.error(f"An error occurred while loading {StopWords}: {e}")
+        st.error(f"An error occurred while loading {file_path}: {e}")
         return []
+
+
 
 # Load word lists from .txt files
 @st.cache_data  # Cache the loaded words for performance
-def get_word_lists(StopWords: str) -> Tuple[List[str], List[str], List[str]]:
+def get_word_lists(stop_word_folder: str) -> Tuple[List[str], List[str], List[str]]:
     """Loads positive, negative, and stop words from text files.
 
     Args:
@@ -36,13 +52,20 @@ def get_word_lists(StopWords: str) -> Tuple[List[str], List[str], List[str]]:
     positive_words = load_words("positive-words.txt")
     negative_words = load_words("negative-words.txt")
     stop_words = []
-    if StopWords:  # Check if a folder was provided
+    if stop_word_folder:  # Check if a folder was provided
         try:
-            for filename in os.listdir(StopWords):
+            # Check if the folder exists
+            if not os.path.exists(stop_word_folder):
+                raise FileNotFoundError(f"Stop word folder not found: {stop_word_folder}")
+
+            for filename in os.listdir(stop_word_folder):
                 if filename.endswith(".txt"):  # Only process .txt files
-                    file_path = os.path.join(StopWords, filename)
-                    stop_words.extend(load_words(StopWords))
+                    file_path = os.path.join(stop_word_folder, filename)
+                    stop_words.extend(load_words(file_path))
             stop_words = list(set(stop_words))
+        except FileNotFoundError as e:
+            st.error(e) # Display the error message
+            stop_words = []
         except Exception as e:
             st.error(f"Error reading stop word folder: {e}")
             stop_words = []
