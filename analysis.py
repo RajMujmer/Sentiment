@@ -53,7 +53,7 @@ def get_word_lists() -> Tuple[List[str], List[str], List[str]]:
     positive_words = load_words("positive-words.txt")  # Load positive words
     negative_words = load_words("negative-words.txt")  # Load negative words
     # Load stop words directly, from a single file.
-    stop_words_file = "OnlyStopWords.txt"  # <--- CHANGE THIS PATH IF NEEDED
+    stop_words_file = "stop_words.txt"  # <--- CHANGE THIS PATH IF NEEDED
     stop_words = load_words(stop_words_file)
     return positive_words, negative_words, stop_words
 
@@ -92,7 +92,7 @@ def scrape_text_from_url(url: str) -> Union[str, None]:
 
 
 def calculate_polarity_subjectivity(
-    text: str, stop_words: List[str]
+    text: str, stop_words: List[str], positive_words: List[str], negative_words: List[str]
 ) -> Tuple[float, float]:
     """
     Calculates polarity and subjectivity of a text.
@@ -100,6 +100,8 @@ def calculate_polarity_subjectivity(
     Args:
         text (str): The input text.
         stop_words (List[str]): A list of stop words.
+        positive_words (List[str]): List of positive words.
+        negative_words (List[str]): List of negative words.
 
     Returns:
         Tuple[float, float]: Polarity score (-1 to 1) and subjectivity score (0 to 1).
@@ -313,7 +315,7 @@ def main():
                 return
 
         # Calculate metrics
-        polarity, subjectivity = calculate_polarity_subjectivity(text, stop_words)
+        polarity, subjectivity = calculate_polarity_subjectivity(text, stop_words, positive_words, negative_words) # Pass the word lists
         fog_index = calculate_fog_index(text, stop_words)
         complex_word_count = count_complex_words(text, stop_words)
         word_count = count_words(text, stop_words)
@@ -443,3 +445,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
