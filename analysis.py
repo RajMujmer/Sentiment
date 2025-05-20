@@ -9,22 +9,22 @@ import os
 # Define the path to the stop words folder within the repository
 STOP_WORDS_FOLDER = "stop_words"  # Relative path to the folder
 
-def load_words(file_path: str) -> List[str]:
+def load_words(StopWords: str) -> List[str]:
     """Loads words from a text file into a list."""
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(StopWords, "r", encoding="utf-8") as f:
             words = [line.strip().lower() for line in f]
         return words
     except FileNotFoundError:
-        st.error(f"Error: File not found at {file_path}")
+        st.error(f"Error: File not found at {StopWords}")
         return []
     except Exception as e:
-        st.error(f"An error occurred while loading {file_path}: {e}")
+        st.error(f"An error occurred while loading {StopWords}: {e}")
         return []
 
 # Load word lists from .txt files
 @st.cache_data  # Cache the loaded words for performance
-def get_word_lists(stop_word_folder: str) -> Tuple[List[str], List[str], List[str]]:
+def get_word_lists(StopWords: str) -> Tuple[List[str], List[str], List[str]]:
     """Loads positive, negative, and stop words from text files.
 
     Args:
@@ -36,12 +36,12 @@ def get_word_lists(stop_word_folder: str) -> Tuple[List[str], List[str], List[st
     positive_words = load_words("positive-words.txt")
     negative_words = load_words("negative-words.txt")
     stop_words = []
-    if stop_word_folder:  # Check if a folder was provided
+    if StopWords:  # Check if a folder was provided
         try:
-            for filename in os.listdir(stop_word_folder):
+            for filename in os.listdir(StopWords):
                 if filename.endswith(".txt"):  # Only process .txt files
-                    file_path = os.path.join(stop_word_folder, filename)
-                    stop_words.extend(load_words(file_path))
+                    file_path = os.path.join(StopWords, filename)
+                    stop_words.extend(load_words(StopWords))
             stop_words = list(set(stop_words))
         except Exception as e:
             st.error(f"Error reading stop word folder: {e}")
