@@ -5,13 +5,11 @@ import string
 import requests
 from bs4 import BeautifulSoup
 import os
-import pickle # Import pickle
+import pickle  # Import pickle
 
-# Define the path to the stop words folder within the repository
-STOP_WORDS_FOLDER = "stop_words"  # Relative path to the folder
 
 def load_words(file_path: str, encoding: str = "utf-8") -> List[str]:
-    """Loads words from a text file into a list.  Handles encoding issues.
+    """Loads words from a text file into a list. Handles encoding issues.
 
     Args:
         file_path (str): Path to the word list file.
@@ -24,11 +22,17 @@ def load_words(file_path: str, encoding: str = "utf-8") -> List[str]:
             words = [line.strip().lower() for line in f]
         return words
     except UnicodeDecodeError:
-        st.warning(f"Warning:  '{encoding}' encoding failed for {file_path}. Trying 'latin-1'.")
+        st.warning(
+            f"Warning:  '{encoding}' encoding failed for {file_path}. Trying 'latin-1'."
+        )
         try:
-            return load_words(file_path, encoding="latin-1")  # Recursive call with latin-1
+            return load_words(
+                file_path, encoding="latin-1"
+            )  # Recursive call with latin-1
         except Exception as e:
-            st.error(f"Error:  Failed to load {file_path} with both utf-8 and latin-1.  Error: {e}")
+            st.error(
+                f"Error:  Failed to load {file_path} with both utf-8 and latin-1.  Error: {e}"
+            )
             return []
     except FileNotFoundError:
         st.error(f"Error: File not found at {file_path}")
@@ -38,38 +42,20 @@ def load_words(file_path: str, encoding: str = "utf-8") -> List[str]:
         return []
 
 
-
 # Load word lists from .txt files
 @st.cache_data  # Cache the loaded words for performance
-def get_word_lists(stop_word_folder: str) -> Tuple[List[str], List[str], List[str]]:
+def get_word_lists() -> Tuple[List[str], List[str], List[str]]:
     """Loads positive, negative, and stop words from text files.
-
-    Args:
-        stop_word_folder (str): Path to the folder containing stop word files.
 
     Returns:
         Tuple[List[str], List[str], List[str]]: positive, negative, and stop words lists.
     """
-    positive_words = load_words("positive-words.txt") #  Load positive words
-    negative_words = load_words("negative-words.txt") # Load negative words
-    stop_words = []
-    if stop_word_folder:  # Check if a folder was provided
-        try:
-            # Check if the folder exists
-            if not os.path.exists(stop_word_folder):
-                raise FileNotFoundError(f"Stop word folder not found: {stop_word_folder}")
+    positive_words = load_words("positive-words.txt")  # Load positive words
+    negative_words = load_words("negative-words.txt")  # Load negative words
+    # Load stop words directly, like loading a model.  Specify the full path.
+    stop_words_file = "stop_words.txt"  # <--- CHANGE THIS PATH IF NEEDED
+    stop_words = load_words(stop_words_file)
 
-            for filename in os.listdir(stop_word_folder):
-                if filename.endswith(".txt"):  # Only process .txt files
-                    file_path = os.path.join(stop_word_folder, filename)
-                    stop_words.extend(load_words(file_path))
-            stop_words = list(set(stop_words))
-        except FileNotFoundError as e:
-            st.error(e) # Display the error message
-            stop_words = []
-        except Exception as e:
-            st.error(f"Error reading stop word folder: {e}")
-            stop_words = []
     return positive_words, negative_words, stop_words
 
 
@@ -93,7 +79,7 @@ def scrape_text_from_url(url: str) -> Union[str, None]:
 
         soup = BeautifulSoup(response.content, "html.parser")
         # Remove script and style tags
-        for script_or_style in soup.find_all(['script', 'style']):
+        for script_or_style in soup.find_all(["script", "style"]):
             script_or_style.decompose()
         text = soup.get_text(separator="\n", strip=True)
         return text
@@ -106,7 +92,9 @@ def scrape_text_from_url(url: str) -> Union[str, None]:
 
 
 
-def calculate_polarity_subjectivity(text: str, stop_words: List[str]) -> Tuple[float, float]:
+def calculate_polarity_subjectivity(
+    text: str, stop_words: List[str]
+) -> Tuple[float, float]:
     """
     Calculates polarity and subjectivity of a text.
 
@@ -121,12 +109,16 @@ def calculate_polarity_subjectivity(text: str, stop_words: List[str]) -> Tuple[f
         return 0.0, 0.0
 
     # Remove punctuation and convert to lowercase
-    text = text.lower().translate(str.maketrans('', '', string.punctuation))
-    words = [word for word in text.split() if word not in stop_words] # Remove Stop words
+    text = text.lower().translate(str.maketrans("", "", string.punctuation))
+    words = [
+        word for word in text.split() if word not in stop_words
+    ]  # Remove Stop words
 
     positive_count = sum(1 for word in words if word in positive_words)
     negative_count = sum(1 for word in words if word in negative_words)
-    subjective_count = sum(1 for word in words)  # Simplified: Count all non-stop words as subjective
+    subjective_count = sum(
+        1 for word in words
+    )  # Simplified: Count all non-stop words as subjective
 
     total_words = len(words)
     if total_words == 0:
@@ -152,7 +144,7 @@ def calculate_fog_index(text: str, stop_words: List[str]) -> float:
     if not text:
         return 0.0
 
-    sentences = re.split(r'[.!?]+', text)
+    sentences = re.split(r"[.!?]+", text)
     total_sentences = len(sentences)
     if total_sentences == 0:
         return 0.0
@@ -184,18 +176,18 @@ def count_complex_words(text: str, stop_words: List[str]) -> int:
     if not text:
         return 0
 
-    text = text.lower().translate(str.maketrans('', '', string.punctuation)) #remove punctuation
+    text = text.lower().translate(str.maketrans("", "", string.punctuation))  # remove punctuation
     words = [word for word in text.split() if word not in stop_words]
     complex_word_count = 0
     for word in words:
-        vowels = 'aeiouy'
+        vowels = "aeiouy"
         syllable_count = 0
         if len(word) > 2:
             for i, char in enumerate(word):
                 if char in vowels:
-                    if i == 0 or word[i-1] not in vowels:
+                    if i == 0 or word[i - 1] not in vowels:
                         syllable_count += 1
-            if word.endswith('e'):
+            if word.endswith("e"):
                 if word[-2] in vowels:
                     syllable_count -= 1
             if syllable_count >= 3:
@@ -208,7 +200,7 @@ def count_words(text: str, stop_words: List[str]) -> int:
     """Counts the total number of words in a text, excluding stop words and punctuation."""
     if not text:
         return 0
-    text = text.lower().translate(str.maketrans('', '', string.punctuation))
+    text = text.lower().translate(str.maketrans("", "", string.punctuation))
     words = [word for word in text.split() if word not in stop_words]
     return len(words)
 
@@ -216,24 +208,26 @@ def count_words(text: str, stop_words: List[str]) -> int:
 
 def count_syllables(word: str) -> int:
     """Counts the number of syllables in a single word."""
-    vowels = 'aeiouy'
+    vowels = "aeiouy"
     syllable_count = 0
     for i, char in enumerate(word):
         if char in vowels:
             if i == 0 or word[i - 1] not in vowels:
                 syllable_count += 1
-    if word.endswith('e'):
+    if word.endswith("e"):
         if word[-2] in vowels:
             syllable_count -= 1
     return syllable_count if syllable_count > 0 else 1
 
 
 
-def calculate_average_syllables_per_word(text: str, stop_words: List[str]) -> float:
+def calculate_average_syllables_per_word(
+    text: str, stop_words: List[str]
+) -> float:
     """Calculates the average number of syllables per word in a text."""
     if not text:
         return 0.0
-    text = text.lower().translate(str.maketrans('', '', string.punctuation))
+    text = text.lower().translate(str.maketrans("", "", string.punctuation))
     words = [word for word in text.split() if word not in stop_words]
     total_syllables = sum(count_syllables(word) for word in words)
     word_count = len(words)
@@ -245,7 +239,7 @@ def count_personal_pronouns(text: str) -> int:
     """Counts personal pronouns in a text (case-insensitive)."""
     if not text:
         return 0
-    pronoun_pattern = r'\b(i|me|my|mine|you|your|yours|he|she|him|her|his|hers|it|its|we|us|our|ours|they|them|their|theirs)\b'
+    pronoun_pattern = r"\b(i|me|my|mine|you|your|yours|he|she|him|her|his|hers|it|its|we|us|our|ours|they|them|their|theirs)\b"
     pronouns = re.findall(pronoun_pattern, text, re.IGNORECASE)
     return len(pronouns)
 
@@ -255,7 +249,7 @@ def calculate_average_word_length(text: str, stop_words: List[str]) -> float:
     """Calculates the average word length in a text, excluding stop words and punctuation."""
     if not text:
         return 0.0
-    text = text.lower().translate(str.maketrans('', '', string.punctuation))
+    text = text.lower().translate(str.maketrans("", "", string.punctuation))
     words = [word for word in text.split() if word not in stop_words]
     total_word_length = sum(len(word) for word in words)
     word_count = len(words)
@@ -289,7 +283,9 @@ def main():
     st.title("Enhanced Sentiment and Readability Analyzer")
 
     # Input type selection
-    input_type = st.radio("Choose Input Type:", ["Text", "URL", "File"]) # Added File option
+    input_type = st.radio(
+        "Choose Input Type:", ["Text", "URL", "File"]
+    )  # Added File option
 
     # Input text area or URL input
     text = ""
@@ -297,19 +293,21 @@ def main():
         text = st.text_area("Enter the text to analyze:", height=200)
     elif input_type == "URL":
         url = st.text_input("Enter the URL to analyze:")
-    elif input_type == "File": # File Upload
+    elif input_type == "File":  # File Upload
         uploaded_file = st.file_uploader("Upload a text file", type="txt")
         if uploaded_file is not None:
             try:
-                text = uploaded_file.read().decode("utf-8") # Read as string
+                text = uploaded_file.read().decode(
+                    "utf-8"
+                )  # Read as string
             except UnicodeDecodeError:
                 text = uploaded_file.read().decode("latin-1")
             except Exception as e:
                 st.error(f"Error reading file: {e}")
                 return
 
-    # Load word lists, including stop words from the folder in the repo
-    positive_words, negative_words, stop_words = get_word_lists(STOP_WORDS_FOLDER) # Load the words
+    # Load word lists, including stop words.
+    positive_words, negative_words, stop_words = get_word_lists()  # Load the words
 
     # Analyze button
     if st.button("Analyze"):
@@ -333,12 +331,19 @@ def main():
         fog_index = calculate_fog_index(text, stop_words)
         complex_word_count = count_complex_words(text, stop_words)
         word_count = count_words(text, stop_words)
-        average_syllables_per_word = calculate_average_syllables_per_word(text, stop_words)
+        average_syllables_per_word = calculate_average_syllables_per_word(
+            text, stop_words
+        )
         personal_pronoun_count = count_personal_pronouns(text)
         average_word_length = calculate_average_word_length(text, stop_words)
-        average_sentence_length = len(text.split()) / len(re.split(r'[.!?]+', text)) if len(re.split(r'[.!?]+', text)) > 0 else 0
-        percentage_complex_words = (complex_word_count / word_count) * 100 if word_count else 0
-
+        average_sentence_length = (
+            len(text.split()) / len(re.split(r"[.!?]+", text))
+            if len(re.split(r"[.!?]+", text)) > 0
+            else 0
+        )
+        percentage_complex_words = (
+            complex_word_count / word_count
+        ) * 100 if word_count else 0
 
         sentiment = analyze_sentiment(polarity)
 
@@ -417,7 +422,7 @@ def main():
             f"<p><span class='metric-label'>Complex Word Count:</span> <span class='metric-value'>{complex_word_count}</span></p>"
             f"<p><span class='metric-label'>Word Count:</span> <span class='metric-value'>{word_count}</span></p>"
             f"<p><span class='metric-label'>Average Word Length:</span> <span class='metric-value'>{average_word_length:.2f}</span></p>"
-             f"<p><span class='metric-label'>Syllables per Word:</span> <span class='metric-value'>{average_syllables_per_word:.2f}</span></p>"
+            f"<p><span class='metric-label'>Syllables per Word:</span> <span class='metric-value'>{average_syllables_per_word:.2f}</span></p>"
             f"<p><span class='metric-label'>Personal Pronoun Count:</span> <span class='metric-value'>{personal_pronoun_count}</span></p>"
             "</div>",
             unsafe_allow_html=True,
@@ -425,10 +430,18 @@ def main():
 
         # Interpretation of Results
         st.subheader("Interpretation:")
-        st.write("Polarity ranges from -1 (negative) to 1 (positive). Subjectivity ranges from 0 (objective) to 1 (subjective).")
-        st.write("A Fog Index of 7-12 is generally considered readable for a wide audience. Higher values indicate more difficult text.")
-        st.write("Complex words are those with 3 or more syllables.  A higher count can make text harder to read.")
-        st.write("A higher number of personal pronouns can indicate a more subjective and personal writing style.")
+        st.write(
+            "Polarity ranges from -1 (negative) to 1 (positive). Subjectivity ranges from 0 (objective) to 1 (subjective)."
+        )
+        st.write(
+            "A Fog Index of 7-12 is generally considered readable for a wide audience. Higher values indicate more difficult text."
+        )
+        st.write(
+            "Complex words are those with 3 or more syllables.  A higher count can make text harder to read."
+        )
+        st.write(
+            "A higher number of personal pronouns can indicate a more subjective and personal writing style."
+        )
         st.markdown(
             """
             <div style='padding: 1.25rem; border-radius: 0.75rem; background-color: #e0f7fa; border: 1px solid #b2ebf2;'>
