@@ -440,6 +440,49 @@ def main():
             """,
             unsafe_allow_html=True,
         )
+          st.subheader("Metric Definitions and Benefits")  # Added this heading
+        st.write(
+            "<ul style='list-style-type:disc; padding-left: 2rem;'> "  # Use a bulleted list for better formatting
+            "<li><span class='metric-label'>Fog Index:</span>"
+            "<span class='metric-value'> A readability formula that estimates the years of formal education a person needs to understand the text.  A higher Fog Index indicates more difficult reading material.</span>"
+            "<span style='font-weight: bold;'> Benefit:</span> Helps ensure your writing is accessible to your target audience.</li>"
+            "<li><span class='metric-label'>Average Sentence Length:</span>"
+            "<span class='metric-value'> The average number of words per sentence. Longer sentences can make text more complex.</span>"
+            "<span style='font-weight: bold;'> Benefit:</span>  Indicates the complexity of sentence structure and helps in making text concise.</li>"
+            "<li><span class='metric-label'>Percentage of Complex Words:</span>"
+            "<span class='metric-value'> The percentage of words with three or more syllables. A higher percentage suggests more difficult vocabulary.</span>"
+            "<span style='font-weight: bold;'> Benefit:</span>  Highlights the use of difficult vocabulary, which can affect readability.</li>"
+            "<li><span class='metric-label'>Complex Word Count:</span>"
+            "<span class='metric-value'>  The total number of words with three or more syllables.</span>"
+            "<span style='font-weight: bold;'> Benefit:</span>  Provides a direct count of difficult words.</li>"
+            "<li><span class='metric-label'>Word Count:</span>"
+            "<span class='metric-value'> The total number of words in the text (excluding stop words and punctuation).</span>"
+            "<span style='font-weight: bold;'> Benefit:</span> Basic metric for analyzing text length and complexity.</li>"
+            "<li><span class='metric-label'>Average Word Length:</span>"
+            "<span class='metric-value'> The average number of characters per word. Longer words can contribute to complexity.</span>"
+             "<span style='font-weight: bold;'> Benefit:</span> Indicates word complexity; longer words can make text more challenging.</li>"
+            "<li><span class='metric-label'>Syllables per Word:</span>"
+            "<span class='metric-value'> The average number of syllables per word. More syllables generally mean more complex words.</span>"
+            "<span style='font-weight: bold;'> Benefit:</span>  Another measure of word complexity, directly related to readability.</li>"
+            "<li><span class='metric-label'>Personal Pronoun Count:</span>"
+            "<span class='metric-value'> The number of personal pronouns (e.g., I, you, he, she, we, they).</span>"
+            "<span style='font-weight: bold;'> Benefit:</span> Can indicate the writing style's tone (e.g., personal vs. impersonal).</li>"
+            "</ul>",
+            unsafe_allow_html=True,
+        )
+
+        st.subheader("Where to Modify the Code:")
+        st.write(
+            "<ul style='list-style-type:disc; padding-left: 2rem;'> "
+            "<li><span style='font-weight: bold;'>File Paths:</span>  Modify the <code>stop_words_file</code> variable in the <code>get_word_lists</code> function (line 40) to point to the correct location of your stop words file: <br><code>stop_words_file = &#34;stop_words.txt&#34;  # &lt;--- CHANGE THIS PATH IF NEEDED</code></li>"
+            "<li><span style='font-weight: bold;'>Word Lists:</span> The  <code>load_words</code> function (line 16)  loads the words from the files.  Ensure that 'positive-words.txt', 'negative-words.txt', and 'stop_words.txt' are in the same directory as your script, or provide the correct file paths.</li>"
+            "</ul>",
+            unsafe_allow_html=True
+        )
+
+
+if __name__ == "__main__":
+    main()
 
 
 
