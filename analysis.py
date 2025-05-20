@@ -52,10 +52,10 @@ def get_word_lists() -> Tuple[List[str], List[str], List[str]]:
     Returns:
         Tuple[List[str], List[str], List[str]]: positive, negative, and stop words lists.
     """
-    positive_words = load_words("positive-words.txt")  # Load positive words
-    negative_words = load_words("negative-words.txt")  # Load negative words
+    positive_words = load_words("working_dir/positive-words.txt")  # Load positive words
+    negative_words = load_words("working_dir/negative-words.txt")  # Load negative words
     # Load stop words directly, like loading a model.  Specify the full path.
-    stop_words_file = "stop_words.txt"  # <--- CHANGE THIS PATH IF NEEDED
+    stop_words_file = "working_dir/StopWords.txt"  # <--- CHANGE THIS PATH IF NEEDED
     stop_words = load_words(stop_words_file)
 
     return positive_words, negative_words, stop_words
