@@ -440,7 +440,7 @@ def main():
             """,
             unsafe_allow_html=True,
         )
-          st.subheader("Metric Definitions and Benefits")  # Added this heading
+        st.subheader("Metric Definitions and Benefits")  # Added this heading
         st.write(
             "<ul style='list-style-type:disc; padding-left: 2rem;'> "  # Use a bulleted list for better formatting
             "<li><span class='metric-label'>Fog Index:</span>"
