@@ -205,7 +205,14 @@ def count_words(text: str, stop_words: List[str]) -> int:
     words = [word for word in text.split() if word not in stop_words]
     return len(words)
 
-
+def count_stop_words(text: str, stop_words: List[str]) -> int: # 178
+    """Counts the number of stop words in a text."""
+    if not text:
+        return 0
+    text = text.lower().translate(str.maketrans("", "", string.punctuation))
+    words = text.split()
+    stop_word_count = sum(1 for word in words if word in stop_words)
+    return stop_word_count
 
 def count_syllables(word: str) -> int:
     """Counts the number of syllables in a single word."""
@@ -332,7 +339,7 @@ def main():
         percentage_complex_words = (
             complex_word_count / word_count
         ) * 100 if word_count else 0
-
+        stop_word_count = count_stop_words(text, stop_words)
         sentiment = analyze_sentiment(polarity)
 
         # Display results with styled sections
@@ -412,6 +419,7 @@ def main():
             f"<p><span class='metric-label'>Average Word Length:</span> <span class='metric-value'>{average_word_length:.2f}</span></p>"
             f"<p><span class='metric-label'>Syllables per Word:</span> <span class='metric-value'>{average_syllables_per_word:.2f}</span></p>"
             f"<p><span class='metric-label'>Personal Pronoun Count:</span> <span class='metric-value'>{personal_pronoun_count}</span></p>"
+             f"<p><span class='metric-label'>Stop Word Count:</span> <span class='metric-value'>{stop_word_count}</span></p>"
             "</div>",
             unsafe_allow_html=True,
         )
@@ -467,18 +475,12 @@ def main():
             "<li><span class='metric-label'>Personal Pronoun Count:</span>"
             "<span class='metric-value'> The number of personal pronouns (e.g., I, you, he, she, we, they).</span>"
             "<span style='font-weight: bold;'> Benefit:</span> Can indicate the writing style's tone (e.g., personal vs. impersonal).</li>"
+            "<span class='metric-value'> The number of common words (e.g., the, is, in, a) that are often removed before text analysis.</span>"
+            "<span style='font-weight: bold;'> Benefit:</span>  Indicates the amount of less meaningful words in the text.  While stop words are important for sentence structure, a very high proportion can sometimes indicate wordiness or redundancy.</li>"
             "</ul>",
             unsafe_allow_html=True,
         )
 
-        st.subheader("Where to Modify the Code:")
-        st.write(
-            "<ul style='list-style-type:disc; padding-left: 2rem;'> "
-            "<li><span style='font-weight: bold;'>File Paths:</span>  Modify the <code>stop_words_file</code> variable in the <code>get_word_lists</code> function (line 40) to point to the correct location of your stop words file: <br><code>stop_words_file = &#34;stop_words.txt&#34;  # &lt;--- CHANGE THIS PATH IF NEEDED</code></li>"
-            "<li><span style='font-weight: bold;'>Word Lists:</span> The  <code>load_words</code> function (line 16)  loads the words from the files.  Ensure that 'positive-words.txt', 'negative-words.txt', and 'stop_words.txt' are in the same directory as your script, or provide the correct file paths.</li>"
-            "</ul>",
-            unsafe_allow_html=True
-        )
 
 
 if __name__ == "__main__":
