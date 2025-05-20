@@ -53,7 +53,7 @@ def get_word_lists() -> Tuple[List[str], List[str], List[str]]:
     positive_words = load_words("positive-words.txt")  # Load positive words
     negative_words = load_words("negative-words.txt")  # Load negative words
     # Load stop words directly, from a single file.
-    stop_words_file = "stop_words.txt"  # <--- CHANGE THIS PATH IF NEEDED
+    stop_words_file = "OnlyStopWords.txt"  # <--- CHANGE THIS PATH IF NEEDED
     stop_words = load_words(stop_words_file)
     return positive_words, negative_words, stop_words
 
