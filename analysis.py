@@ -7,8 +7,8 @@ from bs4 import BeautifulSoup
 import os
 import pickle  # Import pickle
 
- working_dir = os.path.dirname(os.path.abspath(__file__))
- file_path = working_dir/StopWords.txt
+working_dir = os.path.dirname(os.path.abspath(__file__))
+file_path = working_dir/StopWords.txt
 def load_words(file_path: str, encoding: str = "utf-8") -> List[str]:
     """Loads words from a text file into a list. Handles encoding issues.
 
