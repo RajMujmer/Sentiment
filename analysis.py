@@ -5,6 +5,7 @@ import string
 import requests
 from bs4 import BeautifulSoup
 import os
+import pickle # Import pickle
 
 # Define the path to the stop words folder within the repository
 STOP_WORDS_FOLDER = "stop_words"  # Relative path to the folder
@@ -49,8 +50,8 @@ def get_word_lists(stop_word_folder: str) -> Tuple[List[str], List[str], List[st
     Returns:
         Tuple[List[str], List[str], List[str]]: positive, negative, and stop words lists.
     """
-    positive_words = load_words("positive-words.txt")
-    negative_words = load_words("negative-words.txt")
+    positive_words = load_words("positive-words.txt") #  Load positive words
+    negative_words = load_words("negative-words.txt") # Load negative words
     stop_words = []
     if stop_word_folder:  # Check if a folder was provided
         try:
@@ -288,17 +289,27 @@ def main():
     st.title("Enhanced Sentiment and Readability Analyzer")
 
     # Input type selection
-    input_type = st.radio("Choose Input Type:", ["Text", "URL"])
+    input_type = st.radio("Choose Input Type:", ["Text", "URL", "File"]) # Added File option
 
     # Input text area or URL input
     text = ""
     if input_type == "Text":
         text = st.text_area("Enter the text to analyze:", height=200)
-    else:
+    elif input_type == "URL":
         url = st.text_input("Enter the URL to analyze:")
+    elif input_type == "File": # File Upload
+        uploaded_file = st.file_uploader("Upload a text file", type="txt")
+        if uploaded_file is not None:
+            try:
+                text = uploaded_file.read().decode("utf-8") # Read as string
+            except UnicodeDecodeError:
+                text = uploaded_file.read().decode("latin-1")
+            except Exception as e:
+                st.error(f"Error reading file: {e}")
+                return
 
     # Load word lists, including stop words from the folder in the repo
-    positive_words, negative_words, stop_words = get_word_lists(STOP_WORDS_FOLDER)
+    positive_words, negative_words, stop_words = get_word_lists(STOP_WORDS_FOLDER) # Load the words
 
     # Analyze button
     if st.button("Analyze"):
@@ -307,6 +318,9 @@ def main():
             return
         elif input_type == "Text" and not text:
             st.error("Please enter the text to analyze")
+            return
+        elif input_type == "File" and not uploaded_file:
+            st.error("Please upload a text file")
             return
 
         if input_type == "URL":
