@@ -18,7 +18,7 @@ def load_words(file_path: str, encoding: str = "utf-8") -> List[str]:
         List[str]:  List of words, or an empty list on error.
     """
     working_dir = os.path.dirname(os.path.abspath(__file__))
-    file_path = working_dir/StopWords.txt
+
     try:
         with open(file_path, "r", encoding=encoding) as f:
             words = [line.strip().lower() for line in f]
