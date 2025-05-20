@@ -475,6 +475,7 @@ def main():
             "<li><span class='metric-label'>Personal Pronoun Count:</span>"
             "<span class='metric-value'> The number of personal pronouns (e.g., I, you, he, she, we, they).</span>"
             "<span style='font-weight: bold;'> Benefit:</span> Can indicate the writing style's tone (e.g., personal vs. impersonal).</li>"
+            "<li><span class='metric-label'>Stop Word Count:</span>"
             "<span class='metric-value'> The number of common words (e.g., the, is, in, a) that are often removed before text analysis.</span>"
             "<span style='font-weight: bold;'> Benefit:</span>  Indicates the amount of less meaningful words in the text.  While stop words are important for sentence structure, a very high proportion can sometimes indicate wordiness or redundancy.</li>"
             "</ul>",
