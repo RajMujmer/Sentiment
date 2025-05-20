@@ -7,8 +7,7 @@ from bs4 import BeautifulSoup
 import os
 import pickle  # Import pickle
 
-working_dir = os.path.dirname(os.path.abspath(__file__))
-file_path = working_dir/StopWords.txt
+
 def load_words(file_path: str, encoding: str = "utf-8") -> List[str]:
     """Loads words from a text file into a list. Handles encoding issues.
 
@@ -18,8 +17,6 @@ def load_words(file_path: str, encoding: str = "utf-8") -> List[str]:
     Returns:
         List[str]:  List of words, or an empty list on error.
     """
-   
-
     try:
         with open(file_path, "r", encoding=encoding) as f:
             words = [line.strip().lower() for line in f]
@@ -53,12 +50,11 @@ def get_word_lists() -> Tuple[List[str], List[str], List[str]]:
     Returns:
         Tuple[List[str], List[str], List[str]]: positive, negative, and stop words lists.
     """
-    positive_words = load_words("working_dir/positive-words.txt")  # Load positive words
-    negative_words = load_words("working_dir/negative-words.txt")  # Load negative words
-    # Load stop words directly, like loading a model.  Specify the full path.
-    stop_words_file = "working_dir/StopWords.txt"  # <--- CHANGE THIS PATH IF NEEDED
+    positive_words = load_words("positive-words.txt")  # Load positive words
+    negative_words = load_words("negative-words.txt")  # Load negative words
+    # Load stop words directly, from a single file.
+    stop_words_file = "stop_words.txt"  # <--- CHANGE THIS PATH IF NEEDED
     stop_words = load_words(stop_words_file)
-
     return positive_words, negative_words, stop_words
 
 
@@ -287,8 +283,8 @@ def main():
 
     # Input type selection
     input_type = st.radio(
-        "Choose Input Type:", ["Text", "URL", "File"]
-    )  # Added File option
+        "Choose Input Type:", ["Text", "URL"]
+    )  # Removed File option
 
     # Input text area or URL input
     text = ""
@@ -296,18 +292,7 @@ def main():
         text = st.text_area("Enter the text to analyze:", height=200)
     elif input_type == "URL":
         url = st.text_input("Enter the URL to analyze:")
-    elif input_type == "File":  # File Upload
-        uploaded_file = st.file_uploader("Upload a text file", type="txt")
-        if uploaded_file is not None:
-            try:
-                text = uploaded_file.read().decode(
-                    "utf-8"
-                )  # Read as string
-            except UnicodeDecodeError:
-                text = uploaded_file.read().decode("latin-1")
-            except Exception as e:
-                st.error(f"Error reading file: {e}")
-                return
+
 
     # Load word lists, including stop words.
     positive_words, negative_words, stop_words = get_word_lists()  # Load the words
@@ -320,9 +305,7 @@ def main():
         elif input_type == "Text" and not text:
             st.error("Please enter the text to analyze")
             return
-        elif input_type == "File" and not uploaded_file:
-            st.error("Please upload a text file")
-            return
+
 
         if input_type == "URL":
             text = scrape_text_from_url(url)
