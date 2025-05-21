@@ -288,48 +288,51 @@ def main():
     """
     Main function to run the Streamlit application.
     """
-    st.set_page_config(layout="centered", page_title="Sentiment & Readability Analyzer ✨")
-    st.title("Enhanced Sentiment and Readability Analyzer")
+    st.set_page_config(layout="centered", page_title="Text Analysis Dashboard")
+    st.title("Professional Text Analysis Dashboard")
     st.markdown(
         """
-        <p style='font-size: 1.1rem; color: #555; text-align: center;'>
-            Uncover the sentiment and readability of your text or any webpage with ease.
-            Just paste your content or a URL below!
+        <p style='font-size: 1.1rem; color: #555; text-align: center; margin-bottom: 2rem;'>
+            Gain valuable insights into the sentiment and readability of your text or any webpage.
+            Simply paste your content or a URL below to get started.
         </p>
         """,
-        unsafe_allow_html=True # Added: Lines 269-274
+        unsafe_allow_html=True # MODIFIED: Lines 269-275
     )
     # Input type selection
+    
     input_type = st.radio(
-        "Choose Input Type:", ["Text", "URL"], key="input_type_radio"
+        "Select Input Method:", ["Text Input", "URL Analysis"], key="input_type_radio"
     )  # Removed File option
 
     # Input text area or URL input
     text = ""
-    if input_type == "Text":
-        text = st.text_area("Enter the text to analyze:", height=200)
-    elif input_type == "URL":
-        url = st.text_input("Enter the URL to analyze:")
+    if input_type == "Text Input": # MODIFIED: Line 282
+        text = st.text_area("Enter the text to analyze:", height=200, key="text_input_area") # MODIFIED: Line 283
+    elif input_type == "URL Analysis": # MODIFIED: Line 284
+        url = st.text_input("Enter the URL to analyze:", key="url_input") # MODIFIED: Line 285
+
 
 
     # Load word lists, including stop words.
     positive_words, negative_words, stop_words = get_word_lists()  # Load the words
 
     # Analyze button
-    if st.button("Analyze"):
-        if input_type == "URL" and not url:
+    if st.button("Analyze Content", key="analyze_button"): # MODIFIED: Line 290
+        if input_type == "URL Analysis" and not url: # MODIFIED: Line 291
             st.error("Please enter a URL.")
             return
-        elif input_type == "Text" and not text:
+        elif input_type == "Text Input" and not text: # MODIFIED: Line 293
             st.error("Please enter the text to analyze")
             return
 
 
-        if input_type == "URL":
+        if input_type == "URL Analysis": # MODIFIED: Line 297
             text = scrape_text_from_url(url)
             if text is None:  # Error occurred during scraping
                 return
-        with st.spinner("Analyzing your text... This might take a moment! 😊"):
+
+        with st.spinner("Processing your request..."):
         # Calculate metrics
             polarity, subjectivity = calculate_polarity_subjectivity(text, stop_words, positive_words, negative_words) # Pass the word lists
             fog_index = calculate_fog_index(text, stop_words)
@@ -349,7 +352,7 @@ def main():
                 complex_word_count / word_count
             ) * 100 if word_count else 0
             stop_word_count = count_stop_words(text, stop_words)
-        st.success("Analysis Complete! Here are your insights: ✨")
+        st.success("Analysis complete! Here are the detailed insights.")
         sentiment = analyze_sentiment(polarity)
 
         # Display results with styled sections
@@ -357,60 +360,94 @@ def main():
             """
             <style>
             body {
-                background-color: #e6f7ff; /* Changed from #f0f8ff to a slightly brighter light blue */ # Line 330
+                background-color: #f8f9fa; /* Changed from #f0f8ff to a slightly brighter light blue */ # Line 330
                 color: #333;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern font */
+                font-family: 'Segoe UI', 'Roboto', sans-serif; 
             }
             .stApp { /* Main app container */
-                background-color: #e6f7ff; /* Changed from #f0f8ff to match body background */ # Line 334
+                background-color: #f8f9fa; /* Changed from #f0f8ff to match body background */ # Line 334
             }
             report-section {
-                padding: 1.5rem;
-                margin-bottom: 1.5rem;
-                border-radius: 0.75rem;
-                background-color: #f0f8ff;
-                border: 1px solid #e0e0e0;
-                box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
+                padding: 1.8rem;
+                margin-bottom: 1.8rem;
+                border-radius: 0.8rem;
+                background-color: #ffffff;
+                border: 1px solid #e9ecef;
+                box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.08);
             }
             .report-title {
-                color: #2c3e50;
-                font-size: 1.85rem;
-                margin-bottom: 1.25rem;
-                border-bottom: 2px solid #bdc3c7;
-                padding-bottom: 0.75rem;
+                color: #007bff;
+                font-size: 2rem;
+                margin-bottom: 1.5rem;
+                border-bottom: 2px solid #ced4da;
+                padding-bottom: 0.8rem;
+                font-weight: 700;
             }
             .metric-label {
-                font-weight: bold;
-                color: #2c3e50;
-                font-size: 1.1rem;
+                font-weight: 600;
+                color: #495057;
+                font-size: 1.15rem;
             }
             .metric-value {
                 color: #7f8c8d;
-                font-size: 1.25rem;
+                font-size: 1.3rem;
             }
             .sentiment-box {
-                padding: 1rem;
-                border-radius: 0.5rem;
-                margin-top: 1rem;
+                padding: 1.5rem;
+                border-radius: 0.8rem;
+                margin-top: 2rem;
                 text-align: center;
-                font-size: 1.5rem;
-                font-weight: bold;
+                font-size: 2rem;
+                font-weight: 700;
+                box-shadow: 0 0.2rem 0.6rem rgba(0,0,0,0.1);
             }
             .positive {
-                background-color: #e6f4e5;
-                color: #388e3c;
-                border: 2px solid #81c784;
+            background-color: #d4edda; /* Light green */
+            color: #155724; /* Dark green text */
+            border: 1px solid #28a745; /* Green border */
             }
             .negative {
-                background-color: #fde0d3;
-                color: #d32f2f;
-                border: 2px solid #e57373;
+            background-color: #f8d7da; /* Light red */
+            color: #721c24; /* Dark red text */
+            border: 1px solid #dc3545; /* Red border */
             }
             .neutral {
-                background-color: #f5f5f5;
-                color: #5e5e5e;
-                border: 2px solid #9e9e9e;
+            background-color: #e2e3e5; /* Light grey */
+            color: #383d41; /* Dark grey text */
+            border: 1px solid #6c757d; /* Grey border */
             }
+                        .stButton>button { /* Styling for the Analyze button */
+                background-color: #007bff; /* Professional blue button */
+                color: white;
+                border-radius: 0.5rem;
+                padding: 0.8rem 1.8rem; /* Increased padding */
+                font-size: 1.2rem; /* Larger font */
+                font-weight: 600; /* Bolder */
+                border: none;
+                box-shadow: 0 0.2rem 0.5rem rgba(0,0,0,0.1);
+                transition: background-color 0.3s ease, transform 0.2s ease; /* Added transform for subtle hover */
+            }
+            .stButton>button:hover {
+                background-color: #0056b3; /* Darker blue on hover */
+                transform: translateY(-2px); /* Subtle lift effect */
+                cursor: pointer;
+            }
+            /* Styling for radio buttons */
+            .stRadio > label > div {
+                font-size: 1.1rem;
+                font-weight: 500;
+                color: #343a40;
+            }
+            /* Styling for text area and text input */
+            .stTextArea > label > div, .stTextInput > label > div {
+                font-size: 1.1rem;
+                font-weight: 500;
+                color: #343a40;
+            }
+            </style>
+            """,
+            unsafe_allow_html=True,
+            )
             </style>
             """,
             unsafe_allow_html=True,
@@ -458,8 +495,8 @@ def main():
         )
         st.markdown(
             """
-            <div style='padding: 1.25rem; border-radius: 0.75rem; background-color: #e0f7fa; border: 1px solid #b2ebf2;'>
-                <p style='color: #00838f; font-size: 1.1rem;'>
+            <div style='padding: 1.25rem; border-radius: 0.75rem; background-color: #e9ecef; border: 1px solid #dee2e6;'>
+                <p style='color:#495057; font-size: 1.1rem;'>
                     <b>Disclaimer:</b> This analysis is based on simplified calculations and lexicons.  It may not be as accurate as more sophisticated methods.  The accuracy of sentiment analysis, in particular, is limited by the simple word matching approach.
                 </p>
             </div>
