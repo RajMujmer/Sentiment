@@ -356,7 +356,15 @@ def main():
         st.markdown(
             """
             <style>
-            .report-section {
+            body {
+                background-color: #e6f7ff; /* Changed from #f0f8ff to a slightly brighter light blue */ # Line 330
+                color: #333;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern font */
+            }
+            .stApp { /* Main app container */
+                background-color: #e6f7ff; /* Changed from #f0f8ff to match body background */ # Line 334
+            }
+            report-section {
                 padding: 1.5rem;
                 margin-bottom: 1.5rem;
                 border-radius: 0.75rem;
