@@ -288,11 +288,20 @@ def main():
     """
     Main function to run the Streamlit application.
     """
+    st.set_page_config(layout="centered", page_title="Sentiment & Readability Analyzer ✨")
     st.title("Enhanced Sentiment and Readability Analyzer")
-
+     st.markdown(
+        """
+        <p style='font-size: 1.1rem; color: #555; text-align: center;'>
+            Uncover the sentiment and readability of your text or any webpage with ease.
+            Just paste your content or a URL below!
+        </p>
+        """,
+        unsafe_allow_html=True # Added: Lines 269-274
+    )
     # Input type selection
     input_type = st.radio(
-        "Choose Input Type:", ["Text", "URL"]
+        "Choose Input Type:", ["Text", "URL"], key="input_type_radio"
     )  # Removed File option
 
     # Input text area or URL input
@@ -320,7 +329,7 @@ def main():
             text = scrape_text_from_url(url)
             if text is None:  # Error occurred during scraping
                 return
-
+        with st.spinner("Analyzing your text... This might take a moment! 😊"):
         # Calculate metrics
         polarity, subjectivity = calculate_polarity_subjectivity(text, stop_words, positive_words, negative_words) # Pass the word lists
         fog_index = calculate_fog_index(text, stop_words)
@@ -340,6 +349,7 @@ def main():
             complex_word_count / word_count
         ) * 100 if word_count else 0
         stop_word_count = count_stop_words(text, stop_words)
+        st.success("Analysis Complete! Here are your insights: ✨")
         sentiment = analyze_sentiment(polarity)
 
         # Display results with styled sections
