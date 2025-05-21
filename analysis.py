@@ -331,24 +331,24 @@ def main():
                 return
         with st.spinner("Analyzing your text... This might take a moment! 😊"):
         # Calculate metrics
-        polarity, subjectivity = calculate_polarity_subjectivity(text, stop_words, positive_words, negative_words) # Pass the word lists
-        fog_index = calculate_fog_index(text, stop_words)
-        complex_word_count = count_complex_words(text, stop_words)
-        word_count = count_words(text, stop_words)
-        average_syllables_per_word = calculate_average_syllables_per_word(
-            text, stop_words
-        )
-        personal_pronoun_count = count_personal_pronouns(text)
-        average_word_length = calculate_average_word_length(text, stop_words)
-        average_sentence_length = (
-            len(text.split()) / len(re.split(r"[.!?]+", text))
-            if len(re.split(r"[.!?]+", text)) > 0
-            else 0
-        )
-        percentage_complex_words = (
-            complex_word_count / word_count
-        ) * 100 if word_count else 0
-        stop_word_count = count_stop_words(text, stop_words)
+            polarity, subjectivity = calculate_polarity_subjectivity(text, stop_words, positive_words, negative_words) # Pass the word lists
+            fog_index = calculate_fog_index(text, stop_words)
+            complex_word_count = count_complex_words(text, stop_words)
+            word_count = count_words(text, stop_words)
+            average_syllables_per_word = calculate_average_syllables_per_word(
+                text, stop_words
+            )
+            personal_pronoun_count = count_personal_pronouns(text)
+            average_word_length = calculate_average_word_length(text, stop_words)
+            average_sentence_length = (
+                len(text.split()) / len(re.split(r"[.!?]+", text))
+                if len(re.split(r"[.!?]+", text)) > 0
+                else 0
+            )
+            percentage_complex_words = (
+                complex_word_count / word_count
+            ) * 100 if word_count else 0
+            stop_word_count = count_stop_words(text, stop_words)
         st.success("Analysis Complete! Here are your insights: ✨")
         sentiment = analyze_sentiment(polarity)
 
