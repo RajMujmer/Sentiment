@@ -360,7 +360,7 @@ def main():
                 padding: 1.5rem;
                 margin-bottom: 1.5rem;
                 border-radius: 0.75rem;
-                background-color: #f5f5f5;
+                background-color: #e6f7ff;
                 border: 1px solid #e0e0e0;
                 box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
             }
