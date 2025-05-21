@@ -290,7 +290,7 @@ def main():
     """
     st.set_page_config(layout="centered", page_title="Sentiment & Readability Analyzer ✨")
     st.title("Enhanced Sentiment and Readability Analyzer")
-     st.markdown(
+    st.markdown(
         """
         <p style='font-size: 1.1rem; color: #555; text-align: center;'>
             Uncover the sentiment and readability of your text or any webpage with ease.
