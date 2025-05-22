@@ -416,16 +416,16 @@ def main():
             color: #383d41; /* Dark grey text */
             border: 1px solid #6c757d; /* Grey border */
             }
-                        .stButton>button { /* Styling for the Analyze button */
-                background-color: #007bff; /* Professional blue button */
-                color: white;
-                border-radius: 0.5rem;
-                padding: 0.8rem 1.8rem; /* Increased padding */
-                font-size: 1.2rem; /* Larger font */
-                font-weight: 600; /* Bolder */
-                border: none;
-                box-shadow: 0 0.2rem 0.5rem rgba(0,0,0,0.1);
-                transition: background-color 0.3s ease, transform 0.2s ease; /* Added transform for subtle hover */
+            .stButton>button { /* Styling for the Analyze button */
+            background-color: #007bff; /* Professional blue button */
+            color: white;
+            border-radius: 0.5rem;
+            padding: 0.8rem 1.8rem; /* Increased padding */
+            font-size: 1.2rem; /* Larger font */
+            font-weight: 600; /* Bolder */
+            border: none;
+            box-shadow: 0 0.2rem 0.5rem rgba(0,0,0,0.1);
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Added transform for subtle hover */
             }
             .stButton>button:hover {
                 background-color: #0056b3; /* Darker blue on hover */
@@ -448,7 +448,7 @@ def main():
             """,
             unsafe_allow_html=True,
             )
-            </style>
+        </style>
             """,
             unsafe_allow_html=True,
         )
