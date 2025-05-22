@@ -1,8 +1,8 @@
 # Project Report: Professional Text Analysis Dashboard
-#1. Introduction
+# 1. Introduction
 The "Professional Text Analysis Dashboard" is a Streamlit-based web application designed to provide users with insightful analysis of text content. It allows users to input raw text or a URL, and then it processes the content to deliver detailed sentiment and readability metrics. The goal of this project is to offer a user-friendly and efficient tool for understanding the emotional tone and complexity of written material.
 
-#2. Features
+# 2. Features
 The application offers the following core functionalities:
 
 Flexible Input Methods:
@@ -19,7 +19,7 @@ Detailed Metric Reporting: Presents a comprehensive set of metrics in a clear, o
 
 Professional and Eye-Friendly User Interface: Designed with a clean layout, professional color scheme, and improved typography for a pleasant user experience.
 
-#3. Key Metrics Analyzed
+# 3. Key Metrics Analyzed
 The dashboard provides the following metrics, each offering unique insights into the text:
 
 Polarity Score:
@@ -88,7 +88,7 @@ Meaning: The number of common words (e.g., "the," "is," "in," "a") that are ofte
 
 Benefit: Indicates the proportion of less meaningful words in the text. While essential for sentence structure, a very high proportion can sometimes suggest wordiness or redundancy.
 
-#4. Technical Stack
+# 4. Technical Stack
 Python: The core programming language for the application logic.
 
 Streamlit: Used for rapidly building and deploying the interactive web user interface.
@@ -105,7 +105,7 @@ os: Python's built-in module for interacting with the operating system (e.g., fi
 
 pickle: Python's module for serializing and deserializing Python object structures, although its primary use in this context is just for its load function to demonstrate a similar file loading pattern for word lists.
 
-#5. Architecture and Flow
+# 5. Architecture and Flow
 The application follows a straightforward client-server architecture, typical for Streamlit apps:
 
 User Interface (Streamlit Frontend):
@@ -140,7 +140,7 @@ Sections for "Sentiment Analysis" and "Readability Analysis" clearly separate th
 
 Interpretations, metric definitions, and benefits are provided to help users understand the significance of the numbers.
 
-#6. Setup and Usage
+# 6. Setup and Usage
 To run this project, you will need:
 
 Python 3.7+
@@ -169,7 +169,7 @@ streamlit run app.py
 
 The application will open in your web browser.
 
-#7. Challenges and Considerations
+# 7. Challenges and Considerations
 Lexicon-Based Sentiment: The sentiment analysis is based on simple positive/negative word lists. This approach is fundamental and can be limited in understanding sarcasm, context, or nuanced emotions. More advanced sentiment analysis often requires machine learning models trained on large datasets.
 
 Readability Formula Limitations: Readability formulas like the Fog Index are statistical approximations and may not perfectly reflect human comprehension, especially for highly specialized or creative texts.
@@ -180,7 +180,7 @@ Encoding Issues: Handling text file encodings (e.g., UTF-8 vs. Latin-1) is cruci
 
 Scalability: For very large texts or high concurrent usage, the current in-memory processing might become a bottleneck.
 
-#8. Future Enhancements
+# 8. Future Enhancements
 Advanced Sentiment Analysis: Integrate a pre-trained machine learning model (e.g., using libraries like transformers with BERT or VADER) for more accurate and nuanced sentiment detection.
 
 Topic Modeling: Add functionality to identify key topics or themes within the text using techniques like Latent Dirichlet Allocation (LDA) or Non-negative Matrix Factorization (NMF).
