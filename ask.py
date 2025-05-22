@@ -291,9 +291,9 @@ def main():
     """
     Main function to run the Streamlit application.
     """
-    st.set_page_config(layout="centered", page_title="Text Analysis Dashboard") # MODIFIED: Line 266
+    st.set_page_config(layout="centered", page_title="Text Analysis Dashboard")
 
-    st.title("Professional Text Analysis Dashboard") # MODIFIED: Line 268
+    st.title("Professional Text Analysis Dashboard")
     st.markdown(
         """
         <p style='font-size: 1.1rem; color: #555; text-align: center; margin-bottom: 2rem;'>
@@ -301,43 +301,43 @@ def main():
             Simply paste your content or a URL below to get started.
         </p>
         """,
-        unsafe_allow_html=True # MODIFIED: Lines 269-275
+        unsafe_allow_html=True # Closing triple quotes for introductory paragraph
     )
 
     # Input type selection
     input_type = st.radio(
-        "Select Input Method:", ["Text Input", "URL Analysis"], key="input_type_radio" # MODIFIED: Line 278
+        "Select Input Method:", ["Text Input", "URL Analysis"], key="input_type_radio"
     )
 
     # Input text area or URL input
     text = ""
-    if input_type == "Text Input": # MODIFIED: Line 282
-        text = st.text_area("Enter the text to analyze:", height=200, key="text_input_area") # MODIFIED: Line 283
-    elif input_type == "URL Analysis": # MODIFIED: Line 284
-        url = st.text_input("Enter the URL to analyze:", key="url_input") # MODIFIED: Line 285
+    if input_type == "Text Input":
+        text = st.text_area("Enter the text to analyze:", height=200, key="text_input_area")
+    elif input_type == "URL Analysis":
+        url = st.text_input("Enter the URL to analyze:", key="url_input")
 
 
     # Load word lists, including stop words.
-    positive_words, negative_words, stop_words = get_word_lists()  # Load the words
+    positive_words, negative_words, stop_words = get_word_lists()
 
     # Analyze button
-    if st.button("Analyze Content", key="analyze_button"): # MODIFIED: Line 290
-        if input_type == "URL Analysis" and not url: # MODIFIED: Line 291
+    if st.button("Analyze Content", key="analyze_button"):
+        if input_type == "URL Analysis" and not url:
             st.error("Please enter a URL.")
             return
-        elif input_type == "Text Input" and not text: # MODIFIED: Line 293
+        elif input_type == "Text Input" and not text:
             st.error("Please enter the text to analyze")
             return
 
 
-        if input_type == "URL Analysis": # MODIFIED: Line 297
+        if input_type == "URL Analysis":
             text = scrape_text_from_url(url)
             if text is None:  # Error occurred during scraping
                 return
 
-        with st.spinner("Processing your request..."): # MODIFIED: Line 302
+        with st.spinner("Processing your request..."):
             # Calculate metrics
-            polarity, subjectivity = calculate_polarity_subjectivity(text, stop_words, positive_words, negative_words) # Pass the word lists
+            polarity, subjectivity = calculate_polarity_subjectivity(text, stop_words, positive_words, negative_words)
             fog_index = calculate_fog_index(text, stop_words)
             complex_word_count = count_complex_words(text, stop_words)
             word_count = count_words(text, stop_words)
@@ -356,7 +356,7 @@ def main():
             ) * 100 if word_count else 0
             stop_word_count = count_stop_words(text, stop_words)
 
-        st.success("Analysis complete! Here are the detailed insights.") # MODIFIED: Line 321
+        st.success("Analysis complete! Here are the detailed insights.")
 
         sentiment = analyze_sentiment(polarity)
 
@@ -365,12 +365,12 @@ def main():
             """
             <style>
             body {
-                background-color: #f8f9fa; /* Very light grey/off-white for a clean look */ # MODIFIED: Line 329
+                background-color: #f8f9fa; /* Very light grey/off-white for a clean look */
                 color: #343a40; /* Darker grey for main text */
                 font-family: 'Segoe UI', 'Roboto', sans-serif; /* Professional font stack */
             }
             .stApp { /* Main app container */
-                background-color: #f8f9fa; /* Match body background */ # MODIFIED: Line 333
+                background-color: #f8f9fa; /* Match body background */
             }
             .report-section {
                 padding: 1.8rem; /* Increased padding for more breathing room */
@@ -450,7 +450,7 @@ def main():
                 color: #343a40;
             }
             </style>
-            """,
+            """, # Closing triple quotes for CSS styles
             unsafe_allow_html=True,
         )
 
@@ -461,7 +461,7 @@ def main():
             f"<p><span class='metric-label'>Subjectivity Score:</span> <span class='metric-value'>{subjectivity:.2f}</span></p>"
             "<div class='sentiment-box " + sentiment.lower() + "'>" + sentiment + "</div>"
             "</div>",
-            unsafe_allow_html=True,
+            unsafe_allow_html=True, # Closing triple quotes for Sentiment Analysis section
         )
 
         st.markdown(
@@ -477,7 +477,7 @@ def main():
             f"<p><span class='metric-label'>Personal Pronoun Count:</span> <span class='metric-value'>{personal_pronoun_count}</span></p>"
             f"<p><span class='metric-label'>Stop Word Count:</span> <span class='metric-value'>{stop_word_count}</span></p>"
             "</div>",
-            unsafe_allow_html=True,
+            unsafe_allow_html=True, # Closing triple quotes for Readability Analysis section
         )
 
         # Interpretation of Results
@@ -496,16 +496,18 @@ def main():
         )
         st.markdown(
             """
-            <div style='padding: 1.25rem; border-radius: 0.75rem; background-color: #e9ecef; border: 1px solid #dee2e6;'> <p style='color: #495057; font-size: 1.1rem;'> <b>Disclaimer:</b> This analysis is based on simplified calculations and lexicons.  It may not be as accurate as more sophisticated methods.  The accuracy of sentiment analysis, in particular, is limited by the simple word matching approach.
+            <div style='padding: 1.25rem; border-radius: 0.75rem; background-color: #e9ecef; border: 1px solid #dee2e6;'>
+                <p style='color: #495057; font-size: 1.1rem;'>
+                    <b>Disclaimer:</b> This analysis is based on simplified calculations and lexicons.  It may not be as accurate as more sophisticated methods.  The accuracy of sentiment analysis, in particular, is limited by the simple word matching approach.
                 </p>
             </div>
-            """,
+            """, # Closing triple quotes for Disclaimer section
             unsafe_allow_html=True,
         )
 
-        st.subheader("Metric Definitions and Benefits")  # Added this heading
+        st.subheader("Metric Definitions and Benefits")
         st.write(
-            "<ul style='list-style-type:disc; padding-left: 2rem;'> "  # Use a bulleted list for better formatting
+            "<ul style='list-style-type:disc; padding-left: 2rem;'> "
             "<li><span class='metric-label'>Fog Index:</span>"
             "<span class='metric-value'> A readability formula that estimates the years of formal education a person needs to understand the text.  A higher Fog Index indicates more difficult reading material.</span>"
             "<span style='font-weight: bold;'> Benefit:</span> Helps ensure your writing is accessible to your target audience.</li>"
@@ -534,7 +536,7 @@ def main():
             "<span class='metric-value'> The number of common words (e.g., the, is, in, a) that are often removed before text analysis.</span>"
             "<span style='font-weight: bold;'> Benefit:</span>  Indicates the amount of less meaningful words in the text.  While stop words are important for sentence structure, a very high proportion can sometimes indicate wordiness or redundancy.</li>"
             "</ul>",
-            unsafe_allow_html=True,
+            unsafe_allow_html=True, # Closing triple quotes for Metric Definitions section
         )
 
         st.subheader("Where to Modify the Code:")
@@ -543,7 +545,7 @@ def main():
             "<li><span style='font-weight: bold;'>File Paths:</span>  Modify the <code>stop_words_file</code> variable in the <code>get_word_lists</code> function (line 40) to point to the correct location of your stop words file: <br><code style='background-color: #f0f4c3; color: #2c3e50; padding: 0.2rem;'>stop_words_file = &#34;stop_words.txt&#34;  # &lt;--- CHANGE THIS PATH IF NEEDED</code></li>"
             "<li><span style='font-weight: bold;'>Word Lists:</span> The  <code>load_words</code> function (line 16)  loads the words from the files.  Ensure that 'positive-words.txt', 'negative-words.txt', and 'stop_words.txt' are in the same directory as your script, or provide the correct file paths.</li>"
             "</ul>",
-            unsafe_allow_html=True
+            unsafe_allow_html=True # Closing triple quotes for Where to Modify section
         )
 
 
