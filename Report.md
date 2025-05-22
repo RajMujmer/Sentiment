@@ -1,4 +1,4 @@
-#Project Report: Professional Text Analysis Dashboard
+# Project Report: Professional Text Analysis Dashboard
 #1. Introduction
 The "Professional Text Analysis Dashboard" is a Streamlit-based web application designed to provide users with insightful analysis of text content. It allows users to input raw text or a URL, and then it processes the content to deliver detailed sentiment and readability metrics. The goal of this project is to offer a user-friendly and efficient tool for understanding the emotional tone and complexity of written material.
 
