@@ -499,8 +499,7 @@ def main():
                 <p style='color:#495057; font-size: 1.1rem;'>
                 <b>Disclaimer:</b> This analysis is based on simplified calculations and lexicons.  It may not be as accurate as more sophisticated methods.  The accuracy of sentiment analysis, in particular, is limited by the simple word matching approach.
                 </p>
-            </div>
-            """,
+            </div> """,
             unsafe_allow_html=True,
         )
         st.subheader("Metric Definitions and Benefits")  # Added this heading
