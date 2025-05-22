@@ -448,10 +448,6 @@ def main():
             """,
             unsafe_allow_html=True,
             )
-        </style>
-            """,
-            unsafe_allow_html=True,
-        )
 
         st.markdown(
             "<div class='report-section'>"
