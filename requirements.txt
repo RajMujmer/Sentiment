@@ -6,7 +6,5 @@ matplotlib
 pandas
 seaborn
 bs4
-os
-pickle 
 spacy
 nltk
