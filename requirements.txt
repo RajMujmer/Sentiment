@@ -7,4 +7,3 @@ pandas
 seaborn
 bs4
 spacy
-nltk
