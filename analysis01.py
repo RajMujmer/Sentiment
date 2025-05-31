@@ -13,7 +13,13 @@ import spacy
 import nltk
 
 def about():
+    st.title("Text Analysis")
     text = st.text_area("Enter the text to analyze:", height=200, key="text_input_area")
-    nlp1 = spacy.load("en_core_web_sm")
-    for token1 in text:
-        return (token1, "  | ", token1.pos_ , "  |  ", token1.lemma_)
+
+    if text:
+        nlp1 = spacy.load("en_core_web_sm")
+        doc = nlp1(text)
+
+        st.write("### Token | POS | Lemma")
+        for token in doc:
+            st.write(f"{token.text} | {token.pos_} | {token.lemma_}")
