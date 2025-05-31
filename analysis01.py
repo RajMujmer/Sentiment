@@ -14,6 +14,6 @@ import nltk
 
 def about():
     text = st.text_area("Enter the text to analyze:", height=200, key="text_input_area")
-     nlp1 = spacy.load("en_core_web_sm")
+    nlp1 = spacy.load("en_core_web_sm")
     for token1 in text:
         return (token1, "  | ", token1.pos_ , "  |  ", token1.lemma_)
